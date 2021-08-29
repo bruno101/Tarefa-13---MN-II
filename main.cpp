@@ -2,7 +2,7 @@
 #include "PVI.h"
 using namespace std;
 
-void RK3(double v0, double y0, double k, double m, int nIter, double t) {
+void RK3(double v0, double y0, double k, double m, int nIter, double t, double t_s) {
 
   PVI *p = new PVI(v0, y0, k, m);
 
@@ -11,6 +11,8 @@ void RK3(double v0, double y0, double k, double m, int nIter, double t) {
   double yAtImpact = y0;
   double vAtImpact = v0;
   double tImpact = 0;
+  double v_s = 0;
+  double y_s = 0;
 
   int iter = 0;
 
@@ -29,7 +31,12 @@ void RK3(double v0, double y0, double k, double m, int nIter, double t) {
       tImpact = p->tempo;
     }
 
-    if (p->yi < 0) {
+    if (p->tempo - t_s < 0.00001) {
+      v_s = p->vi;
+      y_s = p->yi;
+    }
+
+    if ((p->yi < 0) && (p->tempo >= t_s)) {
       break;
     }
     iter++;
@@ -39,10 +46,11 @@ void RK3(double v0, double y0, double k, double m, int nIter, double t) {
 
   }
 
-  cout << "a) Altura máxima: " << maxY << "\n";
-  cout << "b) Tempo na altura máxima: " << tMaxY << "\n";
-  cout << "c) Tempo até o impacto: " << tImpact << "\n";
-  cout << "d) Velocidade no momento do impacto: " << vAtImpact << "\n";
+  cout << "Solução para o valor de t_s dado: (v = " << v_s << ", y = " << y_s << ")\n";
+  cout << "3a) Altura máxima: " << maxY << "\n";
+  cout << "3b) Tempo na altura máxima: " << tMaxY << "\n";
+  cout << "3c) Tempo até o impacto: " << tImpact << "\n";
+  cout << "3d) Velocidade no momento do impacto: " << vAtImpact << "\n";
 
 }
 
@@ -51,6 +59,7 @@ int main() {
   double v0, y0, k, m;
   int nIter;
   double t;
+  double t_s;
 
   cout << "Digite o valor de v0: ";
   cin >> v0;
@@ -64,8 +73,10 @@ int main() {
   cin >> nIter;
   cout << "Digite o valor de t em cada iteração: ";
   cin >> t;
+  cout << "Digite o valor t_s do tempo para o qual você quer a solução (esse valor deve ser múltiplo de t): ";
+  cin >> t_s;
   cout << "\n";
 
-  RK3(v0,y0,k,m,nIter,t);
+  RK3(v0,y0,k,m,nIter,t,t_s);
 
 }
