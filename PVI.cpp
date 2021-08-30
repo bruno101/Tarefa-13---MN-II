@@ -1,8 +1,6 @@
 #include "PVI.h"
 
 PVI::PVI (double v0, double y0, double k, double m) {
-  this->v0 = v0;
-  this->y0 = y0;
   this->k = k;
   this->m = m;
 
